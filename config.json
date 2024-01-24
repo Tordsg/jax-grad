@@ -1,0 +1,70 @@
+{
+"config":[
+    {
+        "controller": {
+            "type": "PID"
+        },
+        "plant": {
+            "type": "Bathtub",
+            "crossTub": 1000,
+            "crossDrain": 10,
+            "initHeight": 500,
+            "noise": 1
+        },
+        "target": 500,
+        "epochs": 50,
+        "timesteps": 100,
+        "lr": 0.01
+    },
+    {
+        "controller": {
+            "type": "Neural",
+            "hidden_layers": [3,5,5,5,3],
+            "activation": ["relu","tanh", "relu", "relu"],
+            "initRange": [ -1, 1 ]},
+        "plant": {
+            "type": "Bathtub",
+            "crossTub": 1000,
+            "crossDrain": 10,
+            "initHeight": 500,
+            "noise": 10
+        },
+        "target": 500,
+        "epochs": 50,
+        "timesteps": 100,
+        "lr": 0.01
+    },
+    {
+        "controller": {
+            "type": "PID"
+        },
+        "plant": {
+            "type": "Cournot",
+            "pMAX": 100,
+            "cM": 0.1,
+            "noise": 10
+        },
+        "target": 500,
+        "epochs": 50,
+        "timesteps": 100,
+        "lr": 0.01
+    },
+    {
+        "controller": {
+            "type": "Neural",
+            "hidden_layers": [3,5],
+            "activation": ["tanh", "relu"],
+            "initRange": [ -1, 1 ]},
+        "plant": {
+            "type": "Cournot",
+            "pMAX": 40,
+            "cM": 0.1,
+            "noise": 0.01
+        },
+        "target": 40,
+        "epochs": 100,
+        "timesteps": 100,
+        "lr": 0.01
+    }
+    ]
+}
