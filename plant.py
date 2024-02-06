@@ -1,6 +1,7 @@
 import math
 import random
 import jax
+import jax.numpy as jnp
 class Plant:
     def __init__(self) -> None:
         self.U = .0
@@ -70,3 +71,30 @@ class Cournot(Plant):
         self.Q = self.Q1 + self.Q2
         p = self.p(self.Q)
         return self.Q1*(p-self.cM)
+    
+class ChickenPopulation:
+    def __init__(self, initPopulation: int, foxes, noise, reproductiveRate) -> None:
+        self.foxes = foxes
+        self.noise = noise
+        self.initPopulation = initPopulation
+        self.population = initPopulation
+        self.reproductiveRate = reproductiveRate
+        
+        
+    def reset(self) -> None:
+        self.population = self.initPopulation
+        self.dPopulation = 0
+        self.food = 0
+    
+    def update(self, U) -> int:
+        #Fox population is static
+        U = jnp.maximum(0, U)
+        noise = random.uniform(self.noise[0], self.noise[1])
+        reproduction_factor = self.population / (1 + jnp.exp(-U))
+        offspring = jnp.floor(reproduction_factor*self.reproductiveRate*(1+noise))
+        jax.debug.print("population: {pop}, food: {food}, offspring: {offspring}, reproductive rate: {reproductiveProbability}", pop=self.population, food=U, offspring=offspring, reproductiveProbability=self.reproductiveRate*(1+noise))
+        self.dPopulation = jnp.floor(offspring - jnp.maximum(0, jnp.tanh(self.population*self.foxes/100)))
+        self.population += self.dPopulation
+        if(self.population < 0):
+            self.population = 0
+        return self.population

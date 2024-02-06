@@ -4,7 +4,7 @@ import numpy as np
 import random
 import jax.numpy as jnp
 from controller import PIDController, NeuralController
-from plant import Bathtub, Cournot
+from plant import Bathtub, Cournot, ChickenPopulation
 import matplotlib.pyplot as plt
 
 
@@ -41,6 +41,7 @@ def runOneEpoch(params, controller, plant, settings):
         output = plant.update(signal)
         error = target - output
         signal = controller.predict(error, params)
+        #jax.debug.print('signal: {signal}, error: {error}, output: {output}', signal=signal, error=error, output=output)
         errors += (jnp.square(target-output))
     return errors/settings['timesteps']
 
@@ -68,7 +69,7 @@ def plotPID(x, y):
 
 if __name__ == "__main__":
     try:
-        config = json.load(open('config.json'))['config'][3]
+        config = json.load(open('config.json'))['config'][1]
     except:
         print('No config file found or config file is not valid.')
         exit()
@@ -88,6 +89,8 @@ if __name__ == "__main__":
         plant = Bathtub(plantData['crossTub'], plantData['initHeight'], plantData['crossDrain'], plantData['noise'])
     elif(plantData['type'] == 'Cournot'):
         plant = Cournot(plantData['pMAX'], plantData['cM'], plantData['noise'])
+    elif(plantData['type'] == 'Chicken'):
+        plant = ChickenPopulation(plantData['initPopulation'], plantData['foxes'], plantData['noise'], plantData['reproductiveRate'])
     settings = {
         'controller': controllerData['type'], 
         'plant': config['plant']['type'],
