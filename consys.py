@@ -76,7 +76,7 @@ def plotPID(x, y):
 
 if __name__ == "__main__":
     try:
-        config = json.load(open('config.json'))['config'][3]
+        config = json.load(open('config.json'))['config'][2]
     except:
         print('No config file found or config file is not valid.')
         exit()

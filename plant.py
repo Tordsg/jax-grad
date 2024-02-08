@@ -103,16 +103,23 @@ class ChickenPopulation:
         self.population = self.initPopulation
         self.dPopulation = 0
         self.food = 0
-    
+    # def update(self, U, noise) -> float:
+    #     # Plant dynamics with noise
+    #     if self.population < 1:
+    #         return 0
+    #     population_change = U/self.population*self.reproductiveRate*(1+noise)*self.population
+    #     self.population += population_change - self.foxes*noise
+
+    #     self.population = jnp.maximum(0, self.population)
+
+    #     return self.population
     def update(self, U, noise) -> float:
-        #Fox population is static
-        U = jax.nn.softplus(U)
         if self.population < 1:
             return 0
         else:
             offspring = jnp.tanh(U/self.population)*self.reproductiveRate*(1+noise)*self.population
             killed = jnp.maximum(0, jnp.tanh(10*self.foxes/self.population)*self.population*(1+noise))
             #jax.debug.print("population: {pop}, food: {food}, offspring: {offspring}, reproductive rate: {reproductiveProbability}, killed: {killed}", pop=self.population, food=U, offspring=offspring, reproductiveProbability=self.reproductiveRate*(1+noise), killed=killed)
-            self.dPopulation = jnp.floor(offspring - killed)
+            self.dPopulation = offspring - killed
             self.population += self.dPopulation
         return self.population
