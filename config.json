@@ -9,7 +9,7 @@
             "crossTub": 1000,
             "crossDrain": 10,
             "initHeight": 500,
-            "noise": 1
+            "noise": [-10,10]
         },
         "target": 500,
         "epochs": 50,
@@ -27,7 +27,7 @@
             "crossTub": 1000,
             "crossDrain": 10,
             "initHeight": 500,
-            "noise": 10
+            "noise": [-10,10]
         },
         "target": 500,
         "epochs": 50,
@@ -41,10 +41,10 @@
         "plant": {
             "type": "Cournot",
             "pMAX": 100,
-            "cM": 0.1,
-            "noise": 10
+            "cM": 50,
+            "noise": [-10,10]
         },
-        "target": 500,
+        "target": 10,
         "epochs": 50,
         "timesteps": 100,
         "lr": 0.01
@@ -52,37 +52,38 @@
     {
         "controller": {
             "type": "Neural",
-            "hidden_layers": [3,5,5],
-            "activation": ["tanh", "relu", "relu"],
-            "initRange": [ -0.02, 0.02 ]},
+            "hidden_layers": [6,9,6],
+            "activation": ["sigmoid","sigmoid", "sigmoid","sigmoid"],
+            "initRange": [ -0.001, 0.001 ]},
         "plant": {
             "type": "Cournot",
-            "pMAX": 20,
-            "cM": 0.5,
-            "noise": 1
+            "pMAX": 100,
+            "cM": 0.1,
+            "noise": [-0.01,0.01]
         },
-        "target": 10,
+        "target": 50,
         "epochs": 200,
-        "timesteps": 100,
-        "lr": 0.005
+        "timesteps": 50,
+        "lr": 0.001
     },
     {
         "controller": {
             "type": "Neural",
-            "hidden_layers": [2],
-            "activation": ["relu"],
-            "initRange": [ 1,2 ]
+            "hidden_layers": [8,16,16,8],
+            "activation": ["sigmoid","sigmoid", "sigmoid","sigmoid"],
+            "initRange": [ 0,1 ]
         },
         "plant": {
             "type": "Chicken",
-            "initPopulation": 98,
-            "foxes": 2,
-            "noise": [-0.1,0.1]
+            "initPopulation": 800,
+            "foxes": 3,
+            "noise": [-0.1,0.1],
+            "reproductiveRate": 0.2
         },
-        "target": 120,
+        "target": 1000,
         "epochs": 200,
         "timesteps": 100,
-        "lr": 0.01
+        "lr": 0.1
     }
     ,
     {
@@ -91,15 +92,15 @@
         },
         "plant": {
             "type": "Chicken",
-            "initPopulation": 110,
+            "initPopulation": 800,
             "foxes": 3,
-            "noise": [-0.02,0.02],
+            "noise": [-0.1,0.1],
             "reproductiveRate": 0.2
         },
-        "target": 200,
+        "target": 1000,
         "epochs": 200,
         "timesteps": 100,
-        "lr": 0.02
+        "lr": 0.01
     }
     ]
 }

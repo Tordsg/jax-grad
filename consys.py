@@ -21,8 +21,12 @@ def runEpochs(settings, controller, params, plant):
                 settings['lr']
               )
         gradfunc = jax.value_and_grad(runOneEpoch, argnums=0)
-        mse, grad = gradfunc(params, controller, plant, settings)
+        mse, grad = gradfunc(params, controller, plant, settings, i)
+        #print('pre' + params.__str__())
+        #params = params - settings['lr'] * grad
         params = jax.tree_map(lambda p, g: p - settings['lr'] * g, params, grad)
+        print('grad' + grad.__str__())
+        #print('post' + params.__str__())
         print('Epoch: ', i, ' MSE: ', mse)
         paramList.append(params)
         mseList.append(mse)
@@ -31,17 +35,20 @@ def runEpochs(settings, controller, params, plant):
     else:
         plotMSE(mseList)
 
-def runOneEpoch(params, controller, plant, settings):
+def runOneEpoch(params, controller, plant, settings,seed):
     controller.reset()
     plant.reset()
     target = settings['target']
     signal = 0
     errors = 0
+    key = jax.random.PRNGKey(seed)
     for i in range(settings['timesteps']):
-        output = plant.update(signal)
+        key, sub = jax.random.split(key)
+        noise = jax.random.uniform(sub) * (plant.noise[1] - plant.noise[0])
+        output = plant.update(signal, noise)
         error = target - output
         signal = controller.predict(error, params)
-        #jax.debug.print('signal: {signal}, error: {error}, output: {output}', signal=signal, error=error, output=output)
+        #jax.debug.print('noise: {noise}, signal: {signal}, error: {error}, output: {output}', noise=noise, signal=signal, error=error, output=output)
         errors += (jnp.square(target-output))
     return errors/settings['timesteps']
 
@@ -69,7 +76,7 @@ def plotPID(x, y):
 
 if __name__ == "__main__":
     try:
-        config = json.load(open('config.json'))['config'][1]
+        config = json.load(open('config.json'))['config'][3]
     except:
         print('No config file found or config file is not valid.')
         exit()

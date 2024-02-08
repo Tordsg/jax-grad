@@ -45,14 +45,15 @@ class NeuralController():
 
             weights = jax.random.uniform(subkey, (output_size, input_size), minval=initRange[0], maxval=initRange[1])
             biases = jax.random.uniform(subkey, (output_size,), minval=initRange[0], maxval=initRange[1])
-
+            weights = jnp.array(weights)
+            biases = jnp.array(biases)
 
             parameters.append((weights, biases))
         for i, (weights, biases) in enumerate(parameters):
             print(f"Layer {i + 1} - Weights shape: {np.array(weights)}, Biases shape: {np.array(biases)}")
         return parameters
     
-    def predict(self, E: float, params: list):
+    def predict(self, E: float, params: jnp.array):
         
         def relu(x): return jnp.maximum(0, x + 1e-7)
         def tanh(x): return jnp.tanh(x)
